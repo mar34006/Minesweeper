@@ -6,6 +6,7 @@ import androidx.gridlayout.widget.GridLayout;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -30,6 +31,10 @@ public class MineSweeperActivity extends AppCompatActivity {
     Set<Integer> dug_cells = new HashSet<>();
     Set<Pair<Integer,Integer>> flag_cells = new HashSet<>();
 
+    private static boolean FIRST_CLICK = true;
+    private static int seconds = 0;
+    private static boolean running = false;
+
     // save the TextViews of all cells in an array, so later on,
     // when a TextView is clicked, we know which cell it is
     private ArrayList<TextView> cell_tvs;
@@ -47,6 +52,8 @@ public class MineSweeperActivity extends AppCompatActivity {
         cell_tvs = new ArrayList<TextView>();
         GridLayout grid = (GridLayout) findViewById(R.id.gridLayout01);
         LayoutInflater li = LayoutInflater.from(this);
+
+        runTimer();
 
         for (int i = 0; i < NUM_BOMBS; i++){
             while(true) {
@@ -76,6 +83,25 @@ public class MineSweeperActivity extends AppCompatActivity {
                 cell_tvs.add(tv);
             }
         }
+    }
+
+    private void runTimer(){
+        final TextView timeView = (TextView)findViewById(R.id.time_view);
+        final Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                int hours = seconds/3600;
+                int minutes = (seconds%3600)/60;
+                int secs = seconds%60;
+                String time = String.format("%d:%02d:%02d", hours, minutes, secs);
+                timeView.setText(time);
+                if (running){
+                    seconds++;
+                }
+                handler.postDelayed(this,1000);
+            }
+        });
     }
 
     private int findIndexOfCellTextView(TextView tv) {
@@ -125,6 +151,10 @@ public class MineSweeperActivity extends AppCompatActivity {
 
     public void onClickTV(View view) {
 
+        if(FIRST_CLICK){
+            running = true;
+        }
+
         TextView tv = (TextView) view;
         int n = findIndexOfCellTextView(tv);
         int row = n / COLUMN_COUNT;
@@ -135,6 +165,7 @@ public class MineSweeperActivity extends AppCompatActivity {
                 if (!flag_cells.contains(curr_location)) {
                     if (bombs.contains(curr_location)) {
                         reveal();
+                        running = false;
                         LOST = true;
                     } else {
                         Integer value = countNearbyBombs(row, col);
@@ -161,6 +192,7 @@ public class MineSweeperActivity extends AppCompatActivity {
                             dug_cells.add(n);
                         }
                         if (checkWin()) {
+                            running = false;
                             WON = true;
                         }
                     }

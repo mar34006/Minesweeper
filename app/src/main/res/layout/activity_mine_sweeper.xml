@@ -39,6 +39,16 @@
             android:onClick="onClickFlag"
             android:text="F" />
 
+        <TextView
+            android:id="@+id/time_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="37dp"
+            android:layout_marginTop="32dp"
+            android:textSize = "40dp"
+            android:padding="5dp"
+            />
+
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
