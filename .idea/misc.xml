@@ -4,7 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_mine_sweeper.xml" value="0.213768115942029" />
+        <entry key="app/src/main/res/layout/activity_mine_sweeper.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_stop_watch.xml" value="0.1" />
         <entry key="app/src/main/res/layout/custom_cell_layout.xml" value="0.213768115942029" />
       </map>

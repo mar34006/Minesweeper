@@ -26,10 +26,11 @@ public class MineSweeperActivity extends AppCompatActivity {
     private static boolean FIRST_CLICK = true;
     Set<Pair<Integer,Integer>> bombs = new HashSet<>();
     Set<Integer> dug_cells = new HashSet<>();
+    Set<Pair<Integer,Integer>> flag_cells = new HashSet<>();
+    private static boolean FLAG_MODE = false;
 
     // save the TextViews of all cells in an array, so later on,
     // when a TextView is clicked, we know which cell it is
-    // Added
     private ArrayList<TextView> cell_tvs;
 
     private int dpToPixel(int dp) {
@@ -104,7 +105,13 @@ public class MineSweeperActivity extends AppCompatActivity {
 
     public void reveal(){
         for(Pair<Integer,Integer> bomb: bombs){
-
+            int row = bomb.first;
+            int col = bomb.second;
+            int n = row*COLUMN_COUNT + col;
+            TextView curr_tv = cell_tvs.get(n);
+            curr_tv.setText("X");
+            curr_tv.setTextColor(Color.GRAY);
+            curr_tv.setBackgroundColor(Color.LTGRAY);
         }
     }
 
@@ -116,31 +123,55 @@ public class MineSweeperActivity extends AppCompatActivity {
         int col = n % COLUMN_COUNT;
         Pair<Integer, Integer> curr_location = new Pair<>(row, col);
 
-        if(bombs.contains(curr_location)){
-            //reveal
-        }
-
-        else{
-            Integer value = countNearbyBombs(row,col);
-            if(value == 0){
-                tv.setText("");
-                tv.setTextColor(Color.GRAY);
-                tv.setBackgroundColor(Color.LTGRAY);
-                dug_cells.add(n);
-                for(int col_mult = -1; col_mult <= 1; col_mult++) {
-                    for (int index = n + col_mult * COLUMN_COUNT - 1; index <= n + col_mult * COLUMN_COUNT + 1; index++) {
-                        if (index >= 0 && index < ROW_COUNT * COLUMN_COUNT && !dug_cells.contains(index)) {
-                            TextView new_tv = cell_tvs.get(index);
-                            onClickTV(new_tv);
+        if(!FLAG_MODE) {
+            if(!flag_cells.contains(curr_location)) {
+                if (bombs.contains(curr_location)) {
+                    reveal();
+                } else {
+                    Integer value = countNearbyBombs(row, col);
+                    if (value == 0) {
+                        tv.setText("");
+                        tv.setTextColor(Color.GRAY);
+                        tv.setBackgroundColor(Color.LTGRAY);
+                        dug_cells.add(n);
+                        for (int col_mult = -1; col_mult <= 1; col_mult++) {
+                            for (int index = n + col_mult * COLUMN_COUNT - 1; index <= n + col_mult * COLUMN_COUNT + 1; index++) {
+                                if (index >= 0 && index < ROW_COUNT * COLUMN_COUNT && !dug_cells.contains(index) && !bombs.contains(index)) {
+                                    TextView new_tv = cell_tvs.get(index);
+                                    onClickTV(new_tv);
+                                }
+                            }
                         }
+                    } else {
+                        tv.setText(value.toString());
+                        tv.setTextColor(Color.GRAY);
+                        tv.setBackgroundColor(Color.LTGRAY);
+                        dug_cells.add(n);
                     }
                 }
             }
-            else{
-                tv.setText(value.toString());
-                tv.setTextColor(Color.GRAY);
-                tv.setBackgroundColor(Color.LTGRAY);
+        } else {
+            if(tv.getCurrentTextColor() == Color.GRAY){
+                tv.setText("");
+                tv.setTextColor(Color.GREEN);
+                flag_cells.remove(curr_location);
             }
+            else {
+                tv.setText("F");
+                tv.setTextColor(Color.GRAY);
+                flag_cells.add(curr_location);
+            }
+        }
+    }
+
+    public void onClickFlag(View view){
+        TextView tv = (TextView) view;
+        if(FLAG_MODE){
+            FLAG_MODE = false;
+            tv.setBackgroundColor(Color.MAGENTA);
+        } else {
+            FLAG_MODE = true;
+            tv.setBackgroundColor(Color.LTGRAY);
         }
     }
 }
