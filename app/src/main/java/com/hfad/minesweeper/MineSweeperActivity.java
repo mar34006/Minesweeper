@@ -6,6 +6,7 @@ import androidx.gridlayout.widget.GridLayout;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,7 @@ public class MineSweeperActivity extends AppCompatActivity {
     private static final int NUM_BOMBS = 4;
     private static boolean FIRST_CLICK = true;
     Set<Pair<Integer,Integer>> bombs = new HashSet<>();
-    Set<Pair<Integer,Integer>> dug_cells = new HashSet<>();
+    Set<Integer> dug_cells = new HashSet<>();
 
     // save the TextViews of all cells in an array, so later on,
     // when a TextView is clicked, we know which cell it is
@@ -51,6 +52,7 @@ public class MineSweeperActivity extends AppCompatActivity {
                 int random_col = rand.nextInt(7);
                 Pair<Integer, Integer> curr_bomb = new Pair<>(random_row, random_col);
                 if (!bombs.contains(curr_bomb)){
+                    bombs.add(curr_bomb);
                     break;
                 }
             }
@@ -83,8 +85,11 @@ public class MineSweeperActivity extends AppCompatActivity {
 
     private int countNearbyBombs(int row, int col){
         int count = 0;
-        for(Integer i = -1; i <= 1; i++){
-            for(Integer j = -1; j <= 1; j++) {
+        for(Integer i = row - 1; i <= row + 1; i++){
+            for(Integer j = col -1; j <= col + 1; j++) {
+                if(i == row && j == col){
+                    continue;
+                }
                 if((i >= 0 && i < ROW_COUNT) && (j >= 0 && i < COLUMN_COUNT)){
                     Pair<Integer, Integer> curr_location = new Pair<>(i, j);
                     if(bombs.contains(curr_location)){
@@ -96,6 +101,12 @@ public class MineSweeperActivity extends AppCompatActivity {
         return count;
     }
 
+    public void reveal(){
+        for(Pair<Integer,Integer> bomb: bombs){
+
+        }
+    }
+
     public void onClickTV(View view) {
 
         TextView tv = (TextView) view;
@@ -104,12 +115,31 @@ public class MineSweeperActivity extends AppCompatActivity {
         int col = n % COLUMN_COUNT;
         Pair<Integer, Integer> curr_location = new Pair<>(row, col);
 
-        if (tv.getCurrentTextColor() == Color.GRAY) {
-            tv.setTextColor(Color.GREEN);
-            tv.setBackgroundColor(Color.parseColor("lime"));
-        } else {
-            tv.setTextColor(Color.GRAY);
-            tv.setBackgroundColor(Color.LTGRAY);
+        if(bombs.contains(curr_location)){
+            //reveal
+        }
+
+        else{
+            Integer value = countNearbyBombs(row,col);
+            if(value == 0){
+                tv.setText("");
+                tv.setTextColor(Color.GRAY);
+                tv.setBackgroundColor(Color.LTGRAY);
+                dug_cells.add(n);
+                for(int col_mult = -1; col_mult <= 1; col_mult++) {
+                    for (int index = n + col_mult * COLUMN_COUNT - 1; index <= n + col_mult * COLUMN_COUNT + 1; index++) {
+                        if (index >= 0 && index < ROW_COUNT * COLUMN_COUNT && !dug_cells.contains(index)) {
+                            TextView new_tv = cell_tvs.get(index);
+                            onClickTV(new_tv);
+                        }
+                    }
+                }
+            }
+            else{
+                tv.setText(value.toString());
+                tv.setTextColor(Color.GRAY);
+                tv.setBackgroundColor(Color.LTGRAY);
+            }
         }
     }
 }
