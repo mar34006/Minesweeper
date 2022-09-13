@@ -6,6 +6,7 @@ import androidx.gridlayout.widget.GridLayout;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -25,10 +26,10 @@ public class MineSweeperActivity extends AppCompatActivity {
     private static final int NUM_BOMBS = 4;
     private static boolean WON = false;
     private static boolean LOST = false;
+    private static boolean FLAG_MODE = false;
     Set<Pair<Integer,Integer>> bombs = new HashSet<>();
     Set<Integer> dug_cells = new HashSet<>();
     Set<Pair<Integer,Integer>> flag_cells = new HashSet<>();
-    private static boolean FLAG_MODE = false;
 
     // save the TextViews of all cells in an array, so later on,
     // when a TextView is clicked, we know which cell it is
@@ -134,6 +135,7 @@ public class MineSweeperActivity extends AppCompatActivity {
             if (!FLAG_MODE) {
                 if (!flag_cells.contains(curr_location)) {
                     if (bombs.contains(curr_location)) {
+                        LOST = true;
                         reveal();
                     } else {
                         Integer value = countNearbyBombs(row, col);
