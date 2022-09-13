@@ -6,7 +6,6 @@ import androidx.gridlayout.widget.GridLayout;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -94,7 +93,7 @@ public class MineSweeperActivity extends AppCompatActivity {
                 if(i == row && j == col){
                     continue;
                 }
-                if((i >= 0 && i < ROW_COUNT) && (j >= 0 && i < COLUMN_COUNT)){
+                if((i >= 0 && i < ROW_COUNT) && (j >= 0 && j < COLUMN_COUNT)){
                     Pair<Integer, Integer> curr_location = new Pair<>(i, j);
                     if(bombs.contains(curr_location)){
                         count += 1;
@@ -135,8 +134,8 @@ public class MineSweeperActivity extends AppCompatActivity {
             if (!FLAG_MODE) {
                 if (!flag_cells.contains(curr_location)) {
                     if (bombs.contains(curr_location)) {
-                        LOST = true;
                         reveal();
+                        LOST = true;
                     } else {
                         Integer value = countNearbyBombs(row, col);
                         if (value == 0) {
@@ -146,7 +145,10 @@ public class MineSweeperActivity extends AppCompatActivity {
                             dug_cells.add(n);
                             for (int col_mult = -1; col_mult <= 1; col_mult++) {
                                 for (int index = n + col_mult * COLUMN_COUNT - 1; index <= n + col_mult * COLUMN_COUNT + 1; index++) {
-                                    if (index >= 0 && index < ROW_COUNT * COLUMN_COUNT && !dug_cells.contains(index) && !bombs.contains(index)) {
+                                    int index_row = index / COLUMN_COUNT;
+                                    int index_col = index % COLUMN_COUNT;
+                                    Pair<Integer, Integer> index_location = new Pair<>(index_row, index_col);
+                                    if (index >= 0 && index < ROW_COUNT * COLUMN_COUNT && !dug_cells.contains(index) && !bombs.contains(index_location)) {
                                         TextView new_tv = cell_tvs.get(index);
                                         onClickTV(new_tv);
                                     }
@@ -170,14 +172,14 @@ public class MineSweeperActivity extends AppCompatActivity {
                     flag_cells.remove(curr_location);
                 } else {
                     tv.setText("F");
-                    tv.setTextColor(Color.GRAY);
+                    tv.setTextColor(Color.LTGRAY);
                     flag_cells.add(curr_location);
                 }
             }
 
         }
         else if(WON){
-            //take to new screen
+            //take to won screen
         }
         else{
             //take to lost screen
@@ -188,10 +190,10 @@ public class MineSweeperActivity extends AppCompatActivity {
         TextView tv = (TextView) view;
         if(FLAG_MODE){
             FLAG_MODE = false;
-            tv.setBackgroundColor(Color.MAGENTA);
+            tv.setBackgroundColor(Color.parseColor("#FF3700B3"));
         } else {
             FLAG_MODE = true;
-            tv.setBackgroundColor(Color.LTGRAY);
+            tv.setBackgroundColor(Color.GRAY);
         }
     }
 }
