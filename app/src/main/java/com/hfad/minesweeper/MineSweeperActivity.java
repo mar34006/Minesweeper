@@ -23,7 +23,8 @@ public class MineSweeperActivity extends AppCompatActivity {
     private static final int ROW_COUNT = 10;
     private static final int COLUMN_COUNT = 8;
     private static final int NUM_BOMBS = 4;
-    private static boolean FIRST_CLICK = true;
+    private static boolean WON = false;
+    private static boolean LOST = false;
     Set<Pair<Integer,Integer>> bombs = new HashSet<>();
     Set<Integer> dug_cells = new HashSet<>();
     Set<Pair<Integer,Integer>> flag_cells = new HashSet<>();
@@ -115,6 +116,13 @@ public class MineSweeperActivity extends AppCompatActivity {
         }
     }
 
+    public boolean checkWin(){
+        if (dug_cells.size() == ROW_COUNT*COLUMN_COUNT - NUM_BOMBS) {
+            return true;
+        }
+        return false;
+    }
+
     public void onClickTV(View view) {
 
         TextView tv = (TextView) view;
@@ -122,45 +130,55 @@ public class MineSweeperActivity extends AppCompatActivity {
         int row = n / COLUMN_COUNT;
         int col = n % COLUMN_COUNT;
         Pair<Integer, Integer> curr_location = new Pair<>(row, col);
-
-        if(!FLAG_MODE) {
-            if(!flag_cells.contains(curr_location)) {
-                if (bombs.contains(curr_location)) {
-                    reveal();
-                } else {
-                    Integer value = countNearbyBombs(row, col);
-                    if (value == 0) {
-                        tv.setText("");
-                        tv.setTextColor(Color.GRAY);
-                        tv.setBackgroundColor(Color.LTGRAY);
-                        dug_cells.add(n);
-                        for (int col_mult = -1; col_mult <= 1; col_mult++) {
-                            for (int index = n + col_mult * COLUMN_COUNT - 1; index <= n + col_mult * COLUMN_COUNT + 1; index++) {
-                                if (index >= 0 && index < ROW_COUNT * COLUMN_COUNT && !dug_cells.contains(index) && !bombs.contains(index)) {
-                                    TextView new_tv = cell_tvs.get(index);
-                                    onClickTV(new_tv);
+        if(!WON && !LOST) {
+            if (!FLAG_MODE) {
+                if (!flag_cells.contains(curr_location)) {
+                    if (bombs.contains(curr_location)) {
+                        reveal();
+                    } else {
+                        Integer value = countNearbyBombs(row, col);
+                        if (value == 0) {
+                            tv.setText("");
+                            tv.setTextColor(Color.GRAY);
+                            tv.setBackgroundColor(Color.LTGRAY);
+                            dug_cells.add(n);
+                            for (int col_mult = -1; col_mult <= 1; col_mult++) {
+                                for (int index = n + col_mult * COLUMN_COUNT - 1; index <= n + col_mult * COLUMN_COUNT + 1; index++) {
+                                    if (index >= 0 && index < ROW_COUNT * COLUMN_COUNT && !dug_cells.contains(index) && !bombs.contains(index)) {
+                                        TextView new_tv = cell_tvs.get(index);
+                                        onClickTV(new_tv);
+                                    }
                                 }
                             }
+                        } else {
+                            tv.setText(value.toString());
+                            tv.setTextColor(Color.GRAY);
+                            tv.setBackgroundColor(Color.LTGRAY);
+                            dug_cells.add(n);
                         }
-                    } else {
-                        tv.setText(value.toString());
-                        tv.setTextColor(Color.GRAY);
-                        tv.setBackgroundColor(Color.LTGRAY);
-                        dug_cells.add(n);
+                        if (checkWin()) {
+                            WON = true;
+                        }
                     }
                 }
+            } else {
+                if (tv.getCurrentTextColor() == Color.GRAY) {
+                    tv.setText("");
+                    tv.setTextColor(Color.GREEN);
+                    flag_cells.remove(curr_location);
+                } else {
+                    tv.setText("F");
+                    tv.setTextColor(Color.GRAY);
+                    flag_cells.add(curr_location);
+                }
             }
-        } else {
-            if(tv.getCurrentTextColor() == Color.GRAY){
-                tv.setText("");
-                tv.setTextColor(Color.GREEN);
-                flag_cells.remove(curr_location);
-            }
-            else {
-                tv.setText("F");
-                tv.setTextColor(Color.GRAY);
-                flag_cells.add(curr_location);
-            }
+
+        }
+        else if(WON){
+            //take to new screen
+        }
+        else{
+            //take to lost screen
         }
     }
 
