@@ -3,6 +3,7 @@ package com.hfad.minesweeper;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.gridlayout.widget.GridLayout;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -149,6 +150,18 @@ public class MineSweeperActivity extends AppCompatActivity {
         return false;
     }
 
+    public void winning_reveal(){
+        for(Pair<Integer,Integer> bomb: bombs){
+            int row = bomb.first;
+            int col = bomb.second;
+            int n = row*COLUMN_COUNT + col;
+            TextView curr_tv = cell_tvs.get(n);
+            curr_tv.setText(":)");
+            curr_tv.setTextColor(Color.GRAY);
+            curr_tv.setBackgroundColor(Color.LTGRAY);
+        }
+    }
+
     public void onClickTV(View view) {
 
         if(FIRST_CLICK){
@@ -194,6 +207,7 @@ public class MineSweeperActivity extends AppCompatActivity {
                         if (checkWin()) {
                             running = false;
                             WON = true;
+                            winning_reveal();
                         }
                     }
                 }
@@ -211,10 +225,16 @@ public class MineSweeperActivity extends AppCompatActivity {
 
         }
         else if(WON){
-            //take to won screen
+            Intent intent = new Intent(this, ResultsActivity.class);
+            intent.putExtra("time taken",seconds);
+            intent.putExtra("game status",0);
+            startActivity(intent);
         }
         else{
-            //take to lost screen
+            Intent intent = new Intent(this, ResultsActivity.class);
+            intent.putExtra("time taken",seconds);
+            intent.putExtra("game status",1);
+            startActivity(intent);
         }
     }
 
