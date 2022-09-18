@@ -23,33 +23,70 @@
         app:layout_constraintTop_toTopOf="parent"
         >
 
+
     </androidx.gridlayout.widget.GridLayout>
 
-    <RelativeLayout
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
+        <TextView
             android:id="@+id/flag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="300dp"
-            android:layout_marginTop="37dp"
-            android:layout_marginRight="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
             android:onClick="onClickFlag"
-            android:text="F" />
+            android:textSize = "50dp"
+            android:text="@string/pick"
+            android:layout_marginBottom="20dp"
+            />
+
+        <TextView
+            android:id="@+id/flag_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/flag_symbol"
+            android:layout_marginTop="32dp"
+            android:text = "4"
+            android:textSize = "40dp"
+            android:padding="5dp"
+            />
+
+        <TextView
+            android:id="@+id/flag_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="32dp"
+            android:padding="5dp"
+            android:text="@string/flag"
+            android:textSize="35dp" />
 
         <TextView
             android:id="@+id/time_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="37dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="37dp"
+            android:textSize = "40dp"
+            android:padding="5dp"/>
+
+        <TextView
+            android:id="@+id/clock_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/time_view"
             android:layout_marginTop="32dp"
             android:textSize = "40dp"
             android:padding="5dp"
-            />
+            android:text="@string/clock"/>
 
-    </RelativeLayout>
 
+
+    </RelativeLayout>>
 </androidx.constraintlayout.widget.ConstraintLayout>
 

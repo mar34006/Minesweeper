@@ -1,42 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ResultsActivity">
+    android:layout_height="match_parent">
 
-
-    <TextView
-        android:id="@+id/results_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="32dp"
-        android:textSize = "50dp"
-        android:padding="5dp"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="32dp"
-        android:text="You finished in..."
-        android:textSize = "30dp"
-        android:padding="5dp"
-        />
 
     <TextView
         android:id="@+id/time_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="60dp"
-        android:textSize = "50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:textSize = "30dp"
         android:padding="5dp"
         />
 
+    <TextView
+        android:id="@+id/results_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/time_text"
+        android:layout_marginTop="10dp"
+        android:textSize = "30dp"
+        android:padding="5dp"
+        />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/play_again"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/results_text"
+        android:layout_marginTop="40dp"
+        android:padding="5dp"
+        android:text="Play again"
+        android:onClick="onClickPlayAgain"
+        />
+
+
+
+</RelativeLayout>

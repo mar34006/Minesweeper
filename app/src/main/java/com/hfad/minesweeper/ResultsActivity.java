@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class ResultsActivity extends AppCompatActivity {
@@ -18,21 +19,27 @@ public class ResultsActivity extends AppCompatActivity {
 
         TextView results_tv = findViewById(R.id.results_text);
         if(game_status == 0){
-            results_tv.setText("You won!");
+            results_tv.setText("You won.\nGood job.");
         }
         else if(game_status == 1){
-            results_tv.setText("You lost... :(");
+            results_tv.setText("You lost.\nNice try.");
         }
         else{
             results_tv.setText("Error");
         }
 
         TextView time_taken_tv = findViewById(R.id.time_text);
-        int hours = seconds/3600;
-        int minutes = (seconds%3600)/60;
-        int secs = seconds%60;
-        String time = String.format("%d:%02d:%02d", hours, minutes, secs);
-        time_taken_tv.setText(time);
+        //int hours = seconds/3600;
+        //int minutes = (seconds%3600)/60;
+        //int secs = seconds%60;
+        //String time = String.format("%d:%02d:%02d", hours, minutes, secs);
+        String time = Integer.toString(seconds);
+        time_taken_tv.setText("Used " + time + " seconds.");
 
+    }
+
+    public void onClickPlayAgain(View view) {
+        Intent intent = new Intent(this, MineSweeperActivity.class);
+        startActivity(intent);
     }
 }
