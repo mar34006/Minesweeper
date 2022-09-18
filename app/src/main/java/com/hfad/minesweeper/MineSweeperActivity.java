@@ -238,9 +238,16 @@ public class MineSweeperActivity extends AppCompatActivity {
                                     int index_row = index / COLUMN_COUNT;
                                     int index_col = index % COLUMN_COUNT;
                                     Pair<Integer, Integer> index_location = new Pair<>(index_row, index_col);
-                                    if (index >= 0 && index < ROW_COUNT * COLUMN_COUNT && !dug_cells.contains(index) && !bombs.contains(index_location)) {
-                                        TextView new_tv = cell_tvs.get(index);
-                                        onClickTV(new_tv);
+
+                                    if((col == 0 && index_col == COLUMN_COUNT -1)||(index_col == 0 && col == COLUMN_COUNT -1)){
+                                        continue;
+                                    }
+
+                                    if (index >= 0 && index < ROW_COUNT * COLUMN_COUNT){
+                                        if (!dug_cells.contains(index) && !bombs.contains(index_location) && !flag_cells.contains(index_location)) {
+                                            TextView new_tv = cell_tvs.get(index);
+                                            onClickTV(new_tv);
+                                        }
                                     }
                                 }
                             }
