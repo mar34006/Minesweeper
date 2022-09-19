@@ -32,7 +32,8 @@ public class MineSweeperActivity extends AppCompatActivity {
     private static boolean LOST = false;
     private static boolean FLAG_MODE = false;
 
-    // Initialize global data structures for storing which cells cells have bombs, are dug, or have flags
+    // Initialize global data structures for storing which cells cells have bombs, are dug, or
+    // have flags
     Set<Pair<Integer,Integer>> bombs = new HashSet<>();
     Set<Integer> dug_cells = new HashSet<>();
     Set<Pair<Integer,Integer>> flag_cells = new HashSet<>();
@@ -95,7 +96,8 @@ public class MineSweeperActivity extends AppCompatActivity {
         // Initialize grid for the game using li.inflate
         for (int i = 0; i < ROW_COUNT; i++) {
             for (int j = 0; j < COLUMN_COUNT ; j++) {
-                TextView tv = (TextView) li.inflate(R.layout.custom_cell_layout, grid, false);
+                TextView tv =
+                        (TextView) li.inflate(R.layout.custom_cell_layout, grid, false);
                 tv.setTextColor(Color.GREEN);
                 tv.setBackgroundColor(Color.parseColor("lime"));
                 tv.setOnClickListener(this::onClickTV);
@@ -178,6 +180,20 @@ public class MineSweeperActivity extends AppCompatActivity {
         }
     }
 
+    // Method to reveal mines with stars rather than bombs if the game is won
+    public void win_reveal(){
+        for(Pair<Integer,Integer> bomb: bombs){
+            int row = bomb.first;
+            int col = bomb.second;
+            int n = row*COLUMN_COUNT + col;
+            TextView curr_tv = cell_tvs.get(n);
+            String text = getString(R.string.star);
+            curr_tv.setText(text);
+            curr_tv.setTextColor(Color.GRAY);
+            curr_tv.setBackgroundColor(Color.LTGRAY);
+        }
+    }
+
     // Method to check if the game is won. If all cells are dug, the game is ober
     public boolean checkWin(){
         if (dug_cells.size() == ROW_COUNT*COLUMN_COUNT - NUM_BOMBS) {
@@ -234,17 +250,24 @@ public class MineSweeperActivity extends AppCompatActivity {
                             // clicked cell. If we reveal an already clicked cell, the method will
                             // recurse indefinitely
                             for (int col_mult = -1; col_mult <= 1; col_mult++) {
-                                for (int index = n + col_mult * COLUMN_COUNT - 1; index <= n + col_mult * COLUMN_COUNT + 1; index++) {
+                                for (int index = n + col_mult * COLUMN_COUNT - 1;
+                                     index <= n + col_mult * COLUMN_COUNT + 1; index++) {
                                     int index_row = index / COLUMN_COUNT;
                                     int index_col = index % COLUMN_COUNT;
-                                    Pair<Integer, Integer> index_location = new Pair<>(index_row, index_col);
+                                    Pair<Integer, Integer> index_location =
+                                            new Pair<>(index_row, index_col);
 
-                                    if((col == 0 && index_col == COLUMN_COUNT -1)||(index_col == 0 && col == COLUMN_COUNT -1)){
+                                    //Cells should not be revealed if n is on the opposite side of
+                                    // the grid
+                                    if((col == 0 && index_col == COLUMN_COUNT -1)||
+                                            (index_col == 0 && col == COLUMN_COUNT -1)){
                                         continue;
                                     }
 
                                     if (index >= 0 && index < ROW_COUNT * COLUMN_COUNT){
-                                        if (!dug_cells.contains(index) && !bombs.contains(index_location) && !flag_cells.contains(index_location)) {
+                                        if (!dug_cells.contains(index) &&
+                                                !bombs.contains(index_location) &&
+                                                !flag_cells.contains(index_location)) {
                                             TextView new_tv = cell_tvs.get(index);
                                             onClickTV(new_tv);
                                         }
@@ -264,7 +287,7 @@ public class MineSweeperActivity extends AppCompatActivity {
                         if (checkWin()) {
                             running = false;
                             WON = true;
-                            reveal();
+                            win_reveal();
                         }
                     }
                 }
